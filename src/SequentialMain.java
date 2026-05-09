@@ -74,7 +74,7 @@ public class SequentialMain {
             }
         }
 
-        System.out.println("Схожі зображення (Відстань > 0): " + similarCount);
+        System.out.printf("%nСхожі зображення (Відстань > 0): %d%n", similarCount);
         for (ImageMatch match : matches) {
             if (match.distance() > 0) {
                 System.out.printf("  - Відстань: %d біт | %s <---> %s%n",
@@ -82,6 +82,6 @@ public class SequentialMain {
             }
         }
 
-        System.out.println("Загальний час виконання програми: " + totalTime + " мс");
+        System.out.printf("%nЗагальний час виконання програми: %d мс%n", totalTime);
     }
 }
