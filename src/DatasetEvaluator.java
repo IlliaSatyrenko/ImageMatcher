@@ -1,21 +1,24 @@
-import java.nio.file.Path;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DatasetEvaluator {
-    public static void evaluate(String jsonGroundTruth,
-                                List<ImageMatch> similarMatches) {
+    public static void evaluate(String jsonGroundTruth, List<ImageMatch> similarMatches) {
 
         System.out.println("\nОЦІНКА РЕЗУЛЬТАТІВ");
 
         List<List<String>> groundTruthGroups = parseGroundTruth(jsonGroundTruth);
 
         Set<String> groundTruthPairs = new HashSet<>();
+        Set<String> queryImages = new HashSet<>();
+
         for (List<String> group : groundTruthGroups) {
-            for (int i = 0; i < group.size(); i++) {
-                for (int j = i + 1; j < group.size(); j++) {
-                    groundTruthPairs.add(makePairKey(group.get(i), group.get(j)));
+            if (group.size() > 1) {
+                String queryImage = group.get(0);
+                queryImages.add(queryImage);
+
+                for (int i = 1; i < group.size(); i++) {
+                    groundTruthPairs.add(makePairKey(queryImage, group.get(i)));
                 }
             }
         }
@@ -23,8 +26,12 @@ public class DatasetEvaluator {
         Set<String> predictedPairs = new HashSet<>();
 
         for (ImageMatch match : similarMatches) {
-            predictedPairs.add(makePairKey(match.image1().getFileName().toString(),
-                    match.image2().getFileName().toString()));
+            String img1 = match.image1().getFileName().toString();
+            String img2 = match.image2().getFileName().toString();
+
+            if (queryImages.contains(img1) || queryImages.contains(img2)) {
+                predictedPairs.add(makePairKey(img1, img2));
+            }
         }
 
         int tp = 0;

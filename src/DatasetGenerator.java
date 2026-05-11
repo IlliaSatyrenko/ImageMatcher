@@ -19,9 +19,9 @@ import java.util.Random;
 import java.util.stream.Stream;
 
 public class DatasetGenerator {
-    private static final String SOURCE_DIR = "source_images";
-    private static final String OUTPUT_DIR = "generated_dataset";
-    private static final String JSON_OUTPUT = "hard_ground_truth.json";
+    private static final String SOURCE_DIR = "source_images2";
+    private static final String OUTPUT_DIR = "generated_dataset_50-60";
+    private static final String JSON_OUTPUT = "hard_ground_truth_50-60.json";
     private static final Random random = new Random();
 
     public static void main(String[] args) {
@@ -55,7 +55,7 @@ public class DatasetGenerator {
 
                     List<String> similarNames = new ArrayList<>();
 
-                    int variantsCount = 3 + random.nextInt(3);
+                    int variantsCount = 50 + random.nextInt(11);
 
                     for (int i = 0; i < variantsCount; i++) {
                         String variantName = baseName + "_var" + i + ".jpg";
@@ -77,7 +77,7 @@ public class DatasetGenerator {
                             addNoise(variant);
                         }
 
-                        float jpegQuality = 0.1f + random.nextFloat() * 0.5f;
+                        float jpegQuality = 0.3f + random.nextFloat() * 0.5f;
                         saveWithJpegCompression(variant, variantName, jpegQuality);
 
                         similarNames.add(variantName);
@@ -125,18 +125,18 @@ public class DatasetGenerator {
         int w = img.getWidth();
         int h = img.getHeight();
 
-        double scale = 0.7 + (random.nextDouble() * 0.25);
+        double scale = 0.8 + (random.nextDouble() * 0.15);
         int targetW = (int) (w * scale);
         int targetH = (int) (h * scale);
 
-        int x = random.nextInt(w - targetW);
-        int y = random.nextInt(h - targetH);
+        int x = random.nextInt((w - targetW) / 2);
+        int y = random.nextInt((h - targetH) / 2);
 
         return img.getSubimage(x, y, targetW, targetH);
     }
 
     private static BufferedImage randomBrightness(BufferedImage img) {
-        float scaleFactor = 0.6f + random.nextFloat() * 0.8f; // від 0.6 до 1.4
+        float scaleFactor = 0.6f + random.nextFloat() * 0.8f;
         RescaleOp op = new RescaleOp(scaleFactor, 0, null);
         return op.filter(img, null);
     }
@@ -151,7 +151,7 @@ public class DatasetGenerator {
         int fontSize = Math.max(20, img.getWidth() / 15);
         g2d.setFont(new Font("Arial", Font.BOLD, fontSize));
 
-        String text = "@Meme_Random_" + random.nextInt(999);
+        String text = "@Random_Mark_" + random.nextInt(999);
         FontMetrics fontMetrics = g2d.getFontMetrics();
 
         int x = random.nextInt(Math.max(1, img.getWidth() - fontMetrics.stringWidth(text)));
